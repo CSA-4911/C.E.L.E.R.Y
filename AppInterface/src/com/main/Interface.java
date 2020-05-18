@@ -27,15 +27,24 @@ public class Interface implements ActionListener {
 	private JTextField attributeField1;
 	private JTextField attributeField2;
 	private JTextField attributeField3;
-	
+	private JTextField valueFieldRobot;
+	private JTextField valueField1;
+	private JTextField valueField2;
+	private JTextField valueField3;
+
 	private JLabel robotNameLabel;
 	private JLabel attributeLabel1;
 	private JLabel attributeLabel2;
 	private JLabel attributeLabel3;
+	private JLabel valueLabelRobot;
+	private JLabel valueLabel1;
+	private JLabel valueLabel2;
+	private JLabel valueLabel3;
 	
 	private JButton submitBtn;
 	
 	private List<Component> components;
+	private List<JTextField> textFields;
 	
 	// TODO: labels and fields are always grouped (think about making it a class to group them)
 	public Interface() {
@@ -54,18 +63,48 @@ public class Interface implements ActionListener {
 		attributeLabel3 = new JLabel("Attritbute 3");
 		attributeField3 = new JTextField(20);
 		
+		valueLabelRobot = new JLabel("Value");
+		valueFieldRobot = new JTextField(20);
+		
+		valueLabel1 = new JLabel("Value");
+		valueField1 = new JTextField(20);
+		
+		valueLabel2 = new JLabel("Value");
+		valueField2 = new JTextField(20);
+		
+		valueLabel3 = new JLabel("Value");
+		valueField3 = new JTextField(20);
+				
 		submitBtn = new JButton("Submit");
 		
 		components = Arrays.asList(
 				robotNameLabel,
 				robotNameField,
+				valueLabelRobot,
+				valueFieldRobot,
 				attributeLabel1,
 				attributeField1,
+				valueLabel1,
+				valueField1,
 				attributeLabel2,
 				attributeField2,
+				valueLabel2,
+				valueField2,
 				attributeLabel3,
 				attributeField3,
+				valueLabel3,
+				valueField3,
 				submitBtn
+				);
+		
+		textFields = Arrays.asList(
+				valueFieldRobot,
+				attributeField1,
+				valueField1,
+				attributeField2,
+				valueField2,
+				attributeField3,
+				valueField3
 				);
 	}
 	
@@ -76,11 +115,10 @@ public class Interface implements ActionListener {
 		panel.setLayout(new GridLayout(0, 4));
 		
 		submitBtn.setBorder(BorderFactory.createEmptyBorder(100, 100, 100, 100));
-//		robotNameField.setFont(new Font("", Font.PLAIN, 100));
-//		submitBtn.setFont(new Font("", Font.PLAIN, 100));
 		submitBtn.addActionListener(this);
 		
 		for (Component c : components) {
+			c.setFont(new Font("", Font.PLAIN, 50));
 			panel.add(c);
 		}
 		
@@ -94,7 +132,10 @@ public class Interface implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		System.out.println("Robot Name: " + robotNameField.getText());
+		String output = robotNameField.getText();
+		for (JTextField t : textFields) {
+			output += "," + t.getText();
+		}		
 	}
 
 }
