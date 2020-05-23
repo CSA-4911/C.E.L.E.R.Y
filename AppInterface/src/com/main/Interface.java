@@ -1,6 +1,7 @@
 package com.main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -17,6 +18,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -72,13 +74,47 @@ public class Interface implements ActionListener {
 			panel.add(c);
 		}
 		
+		for (JTextField t : textFields) {
+			t.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		}
+		
 		// TODO: clean this menu bar up
 		JMenuBar menuBar = new JMenuBar();
-		JMenu fileMenu = new JMenu();
 		
-//		fileMenu.add(arg0);
+		JMenu fileMenu = new JMenu("File");
+		JMenuItem newItem = new JMenuItem("New");
+		JMenuItem openItem = new JMenuItem("Open");
+		JMenuItem saveAsItem = new JMenuItem("Save As");
+		
+		JMenu editMenu = new JMenu("Edit");
+		JMenuItem cutItem = new JMenuItem("Cut");
+		JMenuItem copyItem = new JMenuItem("Copy");
+		JMenuItem pasteItem = new JMenuItem("Paste");
+		
+		menuBar.setFont(new Font("", Font.PLAIN, 20));
+		fileMenu.setFont(new Font("", Font.PLAIN, 20));
+		editMenu.setFont(new Font("", Font.PLAIN, 20));
+		newItem.setFont(new Font("", Font.PLAIN, 20));
+		openItem.setFont(new Font("", Font.PLAIN, 20));
+		saveAsItem.setFont(new Font("", Font.PLAIN, 20));
+		cutItem.setFont(new Font("", Font.PLAIN, 20));
+		copyItem.setFont(new Font("", Font.PLAIN, 20));
+		pasteItem.setFont(new Font("", Font.PLAIN, 20));
+
+		fileMenu.add(newItem);
+		fileMenu.add(openItem);
+		fileMenu.add(saveAsItem);
+		
+		newItem.addActionListener(this);
+		
+		editMenu.add(cutItem);
+		editMenu.add(copyItem);
+		editMenu.add(pasteItem);
+		
 		menuBar.add(fileMenu);
-		frame.add(menuBar);
+		menuBar.add(editMenu);
+		
+		frame.setJMenuBar(menuBar);
 		// end of clean up phase
 		
 		frame.add(panel, BorderLayout.CENTER);
@@ -90,7 +126,7 @@ public class Interface implements ActionListener {
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent event) {
 		try {
 			PrintStream writer = new PrintStream("Output.csv");
 			writer.print(textFields.get(0).getText());
