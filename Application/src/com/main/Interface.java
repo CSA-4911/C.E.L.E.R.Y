@@ -67,10 +67,10 @@ public class Interface implements ActionListener {
 		menuBar.add(editMenu);
 		
 		for (int i = 0; i < menuBar.getMenuCount(); i++) {
-			menuBar.getMenu(i).setFont(new Font("", Font.PLAIN, 20));
+			menuBar.getMenu(i).setFont(new Font("", Font.PLAIN, 25));
 			for (int j = 0; j < menuBar.getMenu(i).getItemCount(); j++) {
 				menuBar.getMenu(i).getItem(j).addActionListener(this);
-				menuBar.getMenu(i).getItem(j).setFont(new Font("", Font.PLAIN, 20));
+				menuBar.getMenu(i).getItem(j).setFont(new Font("", Font.PLAIN, 25));
 			}
 		}
 						
@@ -111,7 +111,7 @@ public class Interface implements ActionListener {
 		
 		for (JComponent c : components) {
 			c.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-			c.setFont(new Font("", Font.PLAIN, 20));
+			c.setFont(new Font("", Font.PLAIN, 50));
 			panel.add(c);
 		}
 		
@@ -122,7 +122,7 @@ public class Interface implements ActionListener {
 		frame.add(panel, BorderLayout.CENTER);
 	    frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setTitle("Interface Test");
+		frame.setTitle("C.E.L.E.R.Y");
 		frame.setVisible(true);
 		frame.pack();
 	}
