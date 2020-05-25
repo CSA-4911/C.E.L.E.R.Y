@@ -42,11 +42,6 @@ public class Interface implements ActionListener {
 		addMainSection();
 	}
 	
-	public Interface(String filePath) {
-		this();
-		// TODO: add code to open existing files
-	}
-	
 	private void addMenuBarSection() {		
 		JMenuBar menuBar = new JMenuBar();
 		
