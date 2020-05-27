@@ -2,13 +2,16 @@ package com.main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.PrintStream;
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,6 +24,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.utils.CSVWriter;
+
 public class Interface implements ActionListener {
 		
 	private JFrame frame;
@@ -29,14 +34,14 @@ public class Interface implements ActionListener {
 	private ArrayList<JComponent> components;
 	private ArrayList<JTextField> textFields;
 	
-	private ActionListeners actionListeners;
+	private ComponentFields componentFields;
 	
 	private final int SLOTS = 20;
 		
 	public Interface() {
 		frame = new JFrame();
 		panel = new JPanel();
-		actionListeners = new ActionListeners();
+		componentFields = new ComponentFields();
 		
 		addMenuBarSection();
 		addMainSection();
@@ -48,20 +53,20 @@ public class Interface implements ActionListener {
 		JMenu fileMenu = new JMenu("File");
 		JMenu editMenu = new JMenu("Edit");
 
-		actionListeners.newItem = new JMenuItem("New");
-		actionListeners.openItem = new JMenuItem("Open");
-		actionListeners.saveItem = new JMenuItem("Save");
-		actionListeners.cutItem = new JMenuItem("Cut");
-		actionListeners.copyItem = new JMenuItem("Copy");
-		actionListeners.pasteItem = new JMenuItem("Paste");
+		componentFields.newItem = new JMenuItem("New");
+		componentFields.openItem = new JMenuItem("Open");
+		componentFields.saveItem = new JMenuItem("Save");
+		componentFields.cutItem = new JMenuItem("Cut");
+		componentFields.copyItem = new JMenuItem("Copy");
+		componentFields.pasteItem = new JMenuItem("Paste");
 		
-		fileMenu.add(actionListeners.newItem);
-		fileMenu.add(actionListeners.openItem);
-		fileMenu.add(actionListeners.saveItem);
+		fileMenu.add(componentFields.newItem);
+		fileMenu.add(componentFields.openItem);
+		fileMenu.add(componentFields.saveItem);
 		
-		editMenu.add(actionListeners.cutItem);
-		editMenu.add(actionListeners.copyItem);
-		editMenu.add(actionListeners.pasteItem);
+		editMenu.add(componentFields.cutItem);
+		editMenu.add(componentFields.copyItem);
+		editMenu.add(componentFields.pasteItem);
 		
 		menuBar.add(fileMenu);
 		menuBar.add(editMenu);
@@ -88,9 +93,9 @@ public class Interface implements ActionListener {
 			addValueFields();
 		}
 		
-		actionListeners.submitBtn = new JButton("Submit");
-		actionListeners.submitBtn.addActionListener(this);
-		components.add(actionListeners.submitBtn);
+		componentFields.submitBtn = new JButton("Submit");
+		componentFields.submitBtn.addActionListener(this);
+		components.add(componentFields.submitBtn);
 	}
 	
 	private void addValueFields() {
@@ -126,25 +131,102 @@ public class Interface implements ActionListener {
 		frame.setVisible(true);
 		frame.pack();
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent event) {
-		if (event.getSource().equals(actionListeners.submitBtn)) {
+		if (event.getSource().equals(componentFields.submitBtn)) {
+			CSVWriter writer = new CSVWriter("Output.csv");
+			writer.write(textFields);
+		} else if (event.getSource().equals(componentFields.newItem)) {
+			for (JTextField t : textFields) {
+				t.setText("");
+			}
+		} else if (event.getSource().equals(componentFields.openItem)) {
 			try {
-				PrintStream writer = new PrintStream("Output.csv");
-				writer.print(textFields.get(0).getText());
-				for (int i = 1; i < textFields.size(); i++) {
-					writer.print("," + textFields.get(i).getText());
-				}
-				
-				writer.close();
+				Desktop.getDesktop().open(new File("stored files"));
 			} catch (Exception e) {
-				System.err.print(e);
+				e.printStackTrace();
+			}
+			
+			JFrame frame = new JFrame();
+			JPanel panel = new JPanel();
+			
+			panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+			panel.setLayout(new GridLayout(0, 3));
+			
+			JLabel label = new JLabel("File Name:");
+			componentFields.openField = new JTextField();
+			componentFields.openBtn = new JButton("Open");
+			componentFields.openBtn.addActionListener(this);
+			
+			label.setFont(new Font("", Font.PLAIN, 30));
+			componentFields.openField.setFont(new Font("", Font.PLAIN, 30));
+			componentFields.openBtn.setFont(new Font("", Font.PLAIN, 30));
+			
+			panel.add(label);
+			panel.add(componentFields.openField);
+			panel.add(componentFields.openBtn);
+			
+			frame.add(panel, BorderLayout.CENTER);
+		    frame.setPreferredSize(new Dimension(1200, 200));
+			frame.setTitle("Open");
+			frame.setVisible(true);
+			frame.pack();
+		} else if (event.getSource().equals(componentFields.saveItem)) {
+			JFrame frame = new JFrame();
+			JPanel panel = new JPanel();
+			
+			panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+			panel.setLayout(new GridLayout(0, 3));
+			
+			JLabel label = new JLabel("File Name:");
+			componentFields.saveField = new JTextField();
+			componentFields.saveBtn = new JButton("Save");
+			componentFields.saveBtn.addActionListener(this);
+			
+			label.setFont(new Font("", Font.PLAIN, 30));
+			componentFields.saveField.setFont(new Font("", Font.PLAIN, 30));
+			componentFields.saveBtn.setFont(new Font("", Font.PLAIN, 30));
+			
+			panel.add(label);
+			panel.add(componentFields.saveField);
+			panel.add(componentFields.saveBtn);
+			
+			frame.add(panel, BorderLayout.CENTER);
+		    frame.setPreferredSize(new Dimension(1200, 200));
+			frame.setTitle("Save");
+			frame.setVisible(true);
+			frame.pack();
+		} else if (event.getSource().equals(componentFields.saveBtn)) {
+			CSVWriter writer = new CSVWriter("stored files/" + componentFields.saveField.getText() + ".csv");
+			writer.write(textFields);
+		} else if (event.getSource().equals(componentFields.openBtn)) {
+			File folder = new File("stored files");
+			File desiredFile = null;
+			for (File file : folder.listFiles()) {
+				if ((componentFields.openField.getText() + ".csv").equals(file.getName())) {
+					desiredFile = file;
+					break;
+				}
+			}
+			
+			try {
+				if (desiredFile != null) {
+					Scanner reader = new Scanner(desiredFile);
+					String[] values = reader.nextLine().split(",");
+					for (int i = 0; i < values.length; i++) {
+						textFields.get(i).setText(values[i]);
+					}
+					
+					reader.close();
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
 	
-	public class ActionListeners {
+	public class ComponentFields {
 		// MENU ITEMS
 		public JMenuItem newItem;
 		public JMenuItem openItem;
@@ -155,6 +237,12 @@ public class Interface implements ActionListener {
 		
 		// BUTTONS
 		public JButton submitBtn;
+		public JButton saveBtn;
+		public JButton openBtn;
+		
+		// TEXT FIELDS
+		public JTextField saveField;
+		public JTextField openField;
 	}
 
 }
