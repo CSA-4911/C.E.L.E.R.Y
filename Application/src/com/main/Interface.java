@@ -3,7 +3,6 @@ package com.main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -11,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -24,7 +22,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.utils.CSVReader;
 import com.utils.CSVWriter;
+import com.utils.FileSearcher;
+import com.utils.Window;
 
 public class Interface implements ActionListener {
 		
@@ -142,86 +143,46 @@ public class Interface implements ActionListener {
 				t.setText("");
 			}
 		} else if (event.getSource().equals(componentFields.openItem)) {
+			Window window = new Window("Open File");
+			
+			componentFields.openField = new JTextField();
+			componentFields.openBtn = new JButton("Open");
+			
+			componentFields.openBtn.addActionListener(this);
+			
+			window.addComponent(new JLabel("File Name:"));
+			window.addComponent(componentFields.openField);
+			window.addComponent(componentFields.openBtn);
+			
+			window.finish();
+			
 			try {
 				Desktop.getDesktop().open(new File("stored files"));
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			JFrame frame = new JFrame();
-			JPanel panel = new JPanel();
-			
-			panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-			panel.setLayout(new GridLayout(0, 3));
-			
-			JLabel label = new JLabel("File Name:");
-			componentFields.openField = new JTextField();
-			componentFields.openBtn = new JButton("Open");
-			componentFields.openBtn.addActionListener(this);
-			
-			label.setFont(new Font("", Font.PLAIN, 30));
-			componentFields.openField.setFont(new Font("", Font.PLAIN, 30));
-			componentFields.openBtn.setFont(new Font("", Font.PLAIN, 30));
-			
-			panel.add(label);
-			panel.add(componentFields.openField);
-			panel.add(componentFields.openBtn);
-			
-			frame.add(panel, BorderLayout.CENTER);
-		    frame.setPreferredSize(new Dimension(1200, 200));
-			frame.setTitle("Open");
-			frame.setVisible(true);
-			frame.pack();
 		} else if (event.getSource().equals(componentFields.saveItem)) {
-			JFrame frame = new JFrame();
-			JPanel panel = new JPanel();
+			Window window = new Window("Save File");
 			
-			panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-			panel.setLayout(new GridLayout(0, 3));
-			
-			JLabel label = new JLabel("File Name:");
 			componentFields.saveField = new JTextField();
 			componentFields.saveBtn = new JButton("Save");
+			
 			componentFields.saveBtn.addActionListener(this);
 			
-			label.setFont(new Font("", Font.PLAIN, 30));
-			componentFields.saveField.setFont(new Font("", Font.PLAIN, 30));
-			componentFields.saveBtn.setFont(new Font("", Font.PLAIN, 30));
+			window.addComponent(new JLabel("File Name:"));
+			window.addComponent(componentFields.saveField);
+			window.addComponent(componentFields.saveBtn);
 			
-			panel.add(label);
-			panel.add(componentFields.saveField);
-			panel.add(componentFields.saveBtn);
-			
-			frame.add(panel, BorderLayout.CENTER);
-		    frame.setPreferredSize(new Dimension(1200, 200));
-			frame.setTitle("Save");
-			frame.setVisible(true);
-			frame.pack();
+			window.finish();
 		} else if (event.getSource().equals(componentFields.saveBtn)) {
 			CSVWriter writer = new CSVWriter("stored files/" + componentFields.saveField.getText() + ".csv");
 			writer.write(textFields);
 		} else if (event.getSource().equals(componentFields.openBtn)) {
-			File folder = new File("stored files");
-			File desiredFile = null;
-			for (File file : folder.listFiles()) {
-				if ((componentFields.openField.getText() + ".csv").equals(file.getName())) {
-					desiredFile = file;
-					break;
-				}
-			}
-			
-			try {
-				if (desiredFile != null) {
-					Scanner reader = new Scanner(desiredFile);
-					String[] values = reader.nextLine().split(",");
-					for (int i = 0; i < values.length; i++) {
-						textFields.get(i).setText(values[i]);
-					}
-					
-					reader.close();
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
+			FileSearcher searcher = new FileSearcher("stored files");	
+			File desiredFile = searcher.search(componentFields.openField.getText() + ".csv");
+			if (desiredFile != null) {
+				CSVReader reader = new CSVReader(desiredFile);
+				reader.setTextFields(textFields, reader.read());
 			}
 		}
 	}
