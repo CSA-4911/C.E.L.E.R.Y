@@ -2,18 +2,18 @@ package com.main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -24,8 +24,6 @@ import javax.swing.JTextField;
 
 import com.utils.CSVReader;
 import com.utils.CSVWriter;
-import com.utils.FileSearcher;
-import com.utils.Window;
 
 public class Interface implements ActionListener {
 		
@@ -143,46 +141,18 @@ public class Interface implements ActionListener {
 				t.setText("");
 			}
 		} else if (event.getSource().equals(componentFields.openItem)) {
-			Window window = new Window("Open File");
-			
-			componentFields.openField = new JTextField();
-			componentFields.openBtn = new JButton("Open");
-			
-			componentFields.openBtn.addActionListener(this);
-			
-			window.addComponent(new JLabel("File Name:"));
-			window.addComponent(componentFields.openField);
-			window.addComponent(componentFields.openBtn);
-			
-			window.finish();
-			
-			try {
-				Desktop.getDesktop().open(new File("stored files"));
-			} catch (Exception e) {
-				e.printStackTrace();
+			JFileChooser chooser = new JFileChooser();
+			chooser.setPreferredSize(new Dimension(1200, 700));
+			if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+				CSVReader reader = new CSVReader(chooser.getSelectedFile());
+				reader.setTextFields(textFields, reader.read());
 			}
 		} else if (event.getSource().equals(componentFields.saveItem)) {
-			Window window = new Window("Save File");
-			
-			componentFields.saveField = new JTextField();
-			componentFields.saveBtn = new JButton("Save");
-			
-			componentFields.saveBtn.addActionListener(this);
-			
-			window.addComponent(new JLabel("File Name:"));
-			window.addComponent(componentFields.saveField);
-			window.addComponent(componentFields.saveBtn);
-			
-			window.finish();
-		} else if (event.getSource().equals(componentFields.saveBtn)) {
-			CSVWriter writer = new CSVWriter("stored files/" + componentFields.saveField.getText() + ".csv");
-			writer.write(textFields);
-		} else if (event.getSource().equals(componentFields.openBtn)) {
-			FileSearcher searcher = new FileSearcher("stored files");	
-			File desiredFile = searcher.search(componentFields.openField.getText() + ".csv");
-			if (desiredFile != null) {
-				CSVReader reader = new CSVReader(desiredFile);
-				reader.setTextFields(textFields, reader.read());
+			JFileChooser chooser = new JFileChooser();
+			chooser.setPreferredSize(new Dimension(1200, 700));
+			if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+				CSVWriter writer = new CSVWriter("stored files/" + chooser.getSelectedFile().getName() + ".csv");
+				writer.write(textFields);
 			}
 		}
 	}
@@ -198,12 +168,6 @@ public class Interface implements ActionListener {
 		
 		// BUTTONS
 		public JButton submitBtn;
-		public JButton saveBtn;
-		public JButton openBtn;
-		
-		// TEXT FIELDS
-		public JTextField saveField;
-		public JTextField openField;
 	}
 
 }
