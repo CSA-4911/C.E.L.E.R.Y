@@ -151,7 +151,7 @@ public class Interface implements ActionListener {
 			JFileChooser chooser = new JFileChooser();
 			chooser.setPreferredSize(new Dimension(1200, 700));
 			if (chooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-				CSVWriter writer = new CSVWriter("stored files/" + chooser.getSelectedFile().getName() + ".csv");
+				CSVWriter writer = new CSVWriter(chooser.getCurrentDirectory().getName() + "/" + chooser.getSelectedFile().getName() + ".csv");
 				writer.write(textFields);
 			}
 		}
