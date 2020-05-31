@@ -2,6 +2,7 @@ package com.main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -30,9 +31,7 @@ public class Interface implements ActionListener {
 	private JFrame frame;
 	private JPanel panel;
 	
-	private ArrayList<JComponent> components;
 	private ArrayList<JTextField> textFields;
-	
 	private ComponentFields componentFields;
 	
 	private final int SLOTS = 20;
@@ -47,10 +46,10 @@ public class Interface implements ActionListener {
 	}
 	
 	private void addMenuBarSection() {		
-		JMenuBar menuBar = new JMenuBar();
+		componentFields.menuBar = new JMenuBar();
 		
-		JMenu fileMenu = new JMenu("File");
-		JMenu editMenu = new JMenu("Edit");
+		componentFields.fileMenu = new JMenu("File");
+		componentFields.editMenu = new JMenu("Edit");
 
 		componentFields.newItem = new JMenuItem("New");
 		componentFields.openItem = new JMenuItem("Open");
@@ -59,51 +58,40 @@ public class Interface implements ActionListener {
 		componentFields.copyItem = new JMenuItem("Copy");
 		componentFields.pasteItem = new JMenuItem("Paste");
 		
-		fileMenu.add(componentFields.newItem);
-		fileMenu.add(componentFields.openItem);
-		fileMenu.add(componentFields.saveItem);
+		componentFields.fileMenu.add(componentFields.newItem);
+		componentFields.fileMenu.add(componentFields.openItem);
+		componentFields.fileMenu.add(componentFields.saveItem);
 		
-		editMenu.add(componentFields.cutItem);
-		editMenu.add(componentFields.copyItem);
-		editMenu.add(componentFields.pasteItem);
+		componentFields.editMenu.add(componentFields.cutItem);
+		componentFields.editMenu.add(componentFields.copyItem);
+		componentFields.editMenu.add(componentFields.pasteItem);
 		
-		menuBar.add(fileMenu);
-		menuBar.add(editMenu);
-		
-		for (int i = 0; i < menuBar.getMenuCount(); i++) {
-			menuBar.getMenu(i).setFont(new Font("", Font.PLAIN, 25));
-			for (int j = 0; j < menuBar.getMenu(i).getItemCount(); j++) {
-				menuBar.getMenu(i).getItem(j).addActionListener(this);
-				menuBar.getMenu(i).getItem(j).setFont(new Font("", Font.PLAIN, 25));
-			}
-		}
-						
-		frame.setJMenuBar(menuBar);
+		componentFields.menuBar.add(componentFields.fileMenu);
+		componentFields.menuBar.add(componentFields.editMenu);
 	}
 	
 	private void addMainSection() {
-		components = new ArrayList<JComponent>();
 		textFields = new ArrayList<JTextField>();
 		
-		components.add(new JLabel("Archetype Name"));
+		panel.add(new JLabel("Archetype Name"));
 		addValueFields();
 		for (int i = 1; i <= SLOTS; i++) {
-			components.add(new JLabel("Attribute " + i));
+			panel.add(new JLabel("Attribute " + i));
 			addValueFields();
 		}
 		
 		componentFields.submitBtn = new JButton("Submit");
 		componentFields.submitBtn.addActionListener(this);
-		components.add(componentFields.submitBtn);
+		panel.add(componentFields.submitBtn);
 	}
 	
 	private void addValueFields() {
 		JTextField textField1 = new JTextField();
 		JTextField textField2 = new JTextField();
 		
-		components.add(textField1);
-		components.add(new JLabel("Value"));
-		components.add(textField2);
+		panel.add(textField1);
+		panel.add(new JLabel("Value"));
+		panel.add(textField2);
 		
 		textFields.add(textField1);
 		textFields.add(textField2);
@@ -113,16 +101,24 @@ public class Interface implements ActionListener {
 		panel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
 		panel.setLayout(new GridLayout(0, 4));
 		
-		for (JComponent c : components) {
-			c.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+		for (int i = 0; i < componentFields.menuBar.getMenuCount(); i++) {
+			componentFields.menuBar.getMenu(i).setFont(new Font("", Font.PLAIN, 25));
+			for (int j = 0; j < componentFields.menuBar.getMenu(i).getItemCount(); j++) {
+				componentFields.menuBar.getMenu(i).getItem(j).addActionListener(this);
+				componentFields.menuBar.getMenu(i).getItem(j).setFont(new Font("", Font.PLAIN, 25));
+			}
+		}
+								
+		for (Component c : panel.getComponents()) {
+			((JComponent) c).setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 			c.setFont(new Font("", Font.PLAIN, 50));
-			panel.add(c);
 		}
 		
 		for (JTextField t : textFields) {
 			t.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		}
 		
+		frame.setJMenuBar(componentFields.menuBar);
 		frame.add(panel, BorderLayout.CENTER);
 	    frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -158,6 +154,13 @@ public class Interface implements ActionListener {
 	}
 	
 	public class ComponentFields {
+		// MENU BARS
+		public JMenuBar menuBar;
+		
+		// MENUS
+		public JMenu fileMenu;
+		public JMenu editMenu;
+		
 		// MENU ITEMS
 		public JMenuItem newItem;
 		public JMenuItem openItem;
